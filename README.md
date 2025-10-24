@@ -1,36 +1,138 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Restaurant Menu Maker
+
+A modern, professional restaurant menu creation tool built with Next.js 16, TypeScript, and Tailwind CSS.
+
+## Features
+
+- 🍽️ **Menu Templates**: Sushi Restaurant and Fancy Restaurant designs
+- 🖨️ **Print Ready**: Optimized for Letter, A4, and Legal paper sizes
+- 📱 **Responsive Design**: Works on desktop, tablet, and mobile
+- 🎨 **Modern UI**: Clean, minimal interface with Tailwind CSS
+- 📄 **PDF Export**: High-quality PDF generation
+- 🗄️ **Neon Database**: PostgreSQL database with Drizzle ORM
+- 📁 **Vercel Blob Storage**: Image and file storage
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Set Up Environment Variables
+
+Create a `.env.local` file with the following variables:
+
+```bash
+# Database
+DATABASE_URL="postgresql://username:password@hostname:port/database"
+
+# Vercel Blob Storage
+BLOB_READ_WRITE_TOKEN="your_vercel_blob_token"
+
+# NextAuth.js
+NEXTAUTH_SECRET="your_nextauth_secret"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+### 3. Set Up Database
+
+1. Create a Neon PostgreSQL database at [console.neon.tech](https://console.neon.tech/)
+2. Copy the connection string and add it to your `.env.local` as `DATABASE_URL`
+3. Run database migrations:
+   ```bash
+   npm run db:push
+   ```
+
+### 4. Set Up File Storage
+
+1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
+2. Navigate to Storage → Blob
+3. Create a new Blob store
+4. Copy the read/write token and add it to your `.env.local` as `BLOB_READ_WRITE_TOKEN`
+
+### 5. Start Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Navigate to `http://localhost:3000` to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Database Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run db:generate` - Generate migration files
+- `npm run db:push` - Push schema changes to database
+- `npm run db:migrate` - Run migrations
+- `npm run db:studio` - Open Drizzle Studio
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+### 1. Create Your First Restaurant
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Go to the **Restaurants** page
+2. Click "Add Restaurant"
+3. Fill in your restaurant details
+4. Click "Create Restaurant"
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 2. Add Dishes
 
-## Deploy on Vercel
+1. Go to the **Dishes** page
+2. Click "Add New Dish"
+3. Fill in dish information including:
+   - Name and description
+   - Price
+   - Category
+   - Spice level
+   - Dietary information
+   - Image upload
+4. Click "Create Dish"
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 3. Create Menus
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Go to the **Menus** page
+2. Click "Create New Menu"
+3. Select a template (Sushi or Fancy)
+4. Add menu sections and dishes
+5. Customize the layout
+6. Export as PDF when ready
+
+## Database Schema
+
+The database includes the following tables:
+- `restaurants` - Restaurant information
+- `dishes` - Individual menu items
+- `menu_sections` - Menu categories/sections
+- `menus` - Complete menus
+- `menu_section_dishes` - Many-to-many relationship between sections and dishes
+- `menu_sections_in_menus` - Many-to-many relationship between menus and sections
+
+## Tech Stack
+
+- **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS
+- **Database**: Neon PostgreSQL with Drizzle ORM
+- **Storage**: Vercel Blob for images and files
+- **Authentication**: NextAuth.js
+- **UI Components**: Radix UI primitives
+- **PDF Generation**: React PDF Renderer
+- **Icons**: Lucide React
+
+## Migration from Sanity
+
+This project has been migrated from Sanity CMS to Neon database + Vercel Blob storage for better performance and cost efficiency. All Sanity-related code has been removed and replaced with:
+
+- Database queries using Drizzle ORM
+- Image storage using Vercel Blob
+- Modern database schema design
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## License
+
+MIT License - see LICENSE file for details

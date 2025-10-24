@@ -1,0 +1,29 @@
+import Link from 'next/link'
+
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full space-y-8">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900">Menu Maker</h1>
+          <p className="mt-2 text-sm text-gray-600">
+            Create beautiful restaurant menus
+          </p>
+        </div>
+        {children}
+        <div className="text-center">
+          <Link 
+            href="/" 
+            className="text-sm text-gray-600 hover:text-gray-900"
+          >
+            ← Back to home
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
