@@ -11,6 +11,7 @@ A modern, professional restaurant menu creation tool built with Next.js 16, Type
 - 📄 **PDF Export**: High-quality PDF generation
 - 🗄️ **Neon Database**: PostgreSQL database with Drizzle ORM
 - 📁 **Vercel Blob Storage**: Image and file storage
+- 🏪 **Restaurant-Scoped Data**: All data is automatically organized per restaurant
 
 ## Getting Started
 
@@ -22,19 +23,19 @@ npm install
 
 ### 2. Set Up Environment Variables
 
-Create a `.env.local` file with the following variables:
+Create a `.env.local` file in the root directory with the following variables:
 
 ```bash
-# Database
+# Database Configuration
+# Get this from your Neon database console
 DATABASE_URL="postgresql://username:password@hostname:port/database"
 
-# Vercel Blob Storage
-BLOB_READ_WRITE_TOKEN="your_vercel_blob_token"
-
-# NextAuth.js
-NEXTAUTH_SECRET="your_nextauth_secret"
-NEXTAUTH_URL="http://localhost:3000"
+# Vercel Blob Storage  
+# Get this from your Vercel dashboard under Storage > Blob
+BLOB_READ_WRITE_TOKEN="vercel_blob_token_here"
 ```
+
+**Important**: Without these environment variables, the application will show a "Database not configured" message and won't be able to save data.
 
 ### 3. Set Up Database
 
@@ -76,6 +77,11 @@ Navigate to `http://localhost:3000` to see the application.
 3. Fill in your restaurant details
 4. Click "Create Restaurant"
 
+The system will automatically:
+- Set this as your current restaurant
+- Scope all future data to this restaurant
+- Enable dish and menu management
+
 ### 2. Add Dishes
 
 1. Go to the **Dishes** page
@@ -89,6 +95,8 @@ Navigate to `http://localhost:3000` to see the application.
    - Image upload
 4. Click "Create Dish"
 
+All dishes are automatically associated with your current restaurant.
+
 ### 3. Create Menus
 
 1. Go to the **Menus** page
@@ -100,11 +108,11 @@ Navigate to `http://localhost:3000` to see the application.
 
 ## Database Schema
 
-The database includes the following tables:
+The database includes the following tables with restaurant-scoped data:
 - `restaurants` - Restaurant information
-- `dishes` - Individual menu items
-- `menu_sections` - Menu categories/sections
-- `menus` - Complete menus
+- `dishes` - Individual menu items (scoped to restaurant)
+- `menu_sections` - Menu categories/sections (scoped to restaurant)
+- `menus` - Complete menus (scoped to restaurant)
 - `menu_section_dishes` - Many-to-many relationship between sections and dishes
 - `menu_sections_in_menus` - Many-to-many relationship between menus and sections
 
@@ -113,10 +121,26 @@ The database includes the following tables:
 - **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS
 - **Database**: Neon PostgreSQL with Drizzle ORM
 - **Storage**: Vercel Blob for images and files
-- **Authentication**: NextAuth.js
 - **UI Components**: Radix UI primitives
 - **PDF Generation**: React PDF Renderer
 - **Icons**: Lucide React
+
+## Key Features
+
+### Automatic Configuration
+- **No User Setup Required**: Database and storage connections are automatic
+- **Environment-Based**: Uses environment variables for configuration
+- **Zero Configuration**: Works out of the box once environment variables are set
+
+### Restaurant-Scoped Data
+- **Data Isolation**: Each restaurant's data is completely separate
+- **Automatic Context**: Current restaurant is managed automatically
+- **Cross-Reference Integrity**: All related data maintains restaurant relationships
+
+### Real-Time Updates
+- **Context Management**: Restaurant context updates all pages automatically
+- **Live Data**: Changes reflect immediately across the application
+- **Optimistic Updates**: UI updates before server confirmation
 
 ## Migration from Sanity
 
@@ -125,6 +149,7 @@ This project has been migrated from Sanity CMS to Neon database + Vercel Blob st
 - Database queries using Drizzle ORM
 - Image storage using Vercel Blob
 - Modern database schema design
+- Restaurant-scoped data architecture
 
 ## Contributing
 

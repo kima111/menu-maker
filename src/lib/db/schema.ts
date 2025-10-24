@@ -25,7 +25,7 @@ export const dishes = pgTable('dishes', {
   dietary: json('dietary').$type<string[]>().default([]),
   isAvailable: boolean('is_available').default(true),
   isFeatured: boolean('is_featured').default(false),
-  restaurantId: uuid('restaurant_id').references(() => restaurants.id).notNull(),
+  restaurantId: uuid('restaurant_id').references(() => restaurants.id, { onDelete: 'cascade' }).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
@@ -36,7 +36,7 @@ export const menuSections = pgTable('menu_sections', {
   description: text('description'),
   order: integer('order').notNull(),
   isVisible: boolean('is_visible').default(true),
-  restaurantId: uuid('restaurant_id').references(() => restaurants.id).notNull(),
+  restaurantId: uuid('restaurant_id').references(() => restaurants.id, { onDelete: 'cascade' }).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
@@ -51,7 +51,7 @@ export const menus = pgTable('menus', {
   isPublished: boolean('is_published').default(false),
   publishedAt: timestamp('published_at'),
   slug: text('slug').notNull().unique(),
-  restaurantId: uuid('restaurant_id').references(() => restaurants.id).notNull(),
+  restaurantId: uuid('restaurant_id').references(() => restaurants.id, { onDelete: 'cascade' }).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })

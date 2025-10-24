@@ -1,9 +1,12 @@
 import { neon } from '@neondatabase/serverless'
 import { drizzle } from 'drizzle-orm/neon-http'
 
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL environment variable is required')
+// Use environment variables directly - no user configuration needed
+const databaseUrl = process.env.DATABASE_URL
+
+if (!databaseUrl) {
+  console.warn('DATABASE_URL environment variable is not set. Database operations will not work.')
 }
 
-const sql = neon(process.env.DATABASE_URL)
-export const db = drizzle(sql)
+const sql = databaseUrl ? neon(databaseUrl) : null
+export const db = sql ? drizzle(sql) : null

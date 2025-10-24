@@ -17,31 +17,43 @@ import {
 } from './schema'
 import { eq, desc, asc, and } from 'drizzle-orm'
 
+// Helper function to check if database is available
+function checkDatabase() {
+  if (!db) {
+    throw new Error('Database not configured. Please set DATABASE_URL environment variable.')
+  }
+}
+
 // Restaurant operations
 export async function getRestaurants(ownerId?: string) {
+  checkDatabase()
   if (ownerId) {
-    return await db.select().from(restaurants).where(eq(restaurants.ownerId, ownerId)).orderBy(desc(restaurants.createdAt))
+    return await db!.select().from(restaurants).where(eq(restaurants.ownerId, ownerId)).orderBy(desc(restaurants.createdAt))
   }
-  return await db.select().from(restaurants).orderBy(desc(restaurants.createdAt))
+  return await db!.select().from(restaurants).orderBy(desc(restaurants.createdAt))
 }
 
 export async function getRestaurantById(id: string) {
-  const result = await db.select().from(restaurants).where(eq(restaurants.id, id)).limit(1)
+  checkDatabase()
+  const result = await db!.select().from(restaurants).where(eq(restaurants.id, id)).limit(1)
   return result[0] || null
 }
 
 export async function getRestaurantBySlug(slug: string) {
-  const result = await db.select().from(restaurants).where(eq(restaurants.slug, slug)).limit(1)
+  checkDatabase()
+  const result = await db!.select().from(restaurants).where(eq(restaurants.slug, slug)).limit(1)
   return result[0] || null
 }
 
 export async function createRestaurant(data: NewRestaurant) {
-  const result = await db.insert(restaurants).values(data).returning()
+  checkDatabase()
+  const result = await db!.insert(restaurants).values(data).returning()
   return result[0]
 }
 
 export async function updateRestaurant(id: string, data: Partial<NewRestaurant>) {
-  const result = await db.update(restaurants)
+  checkDatabase()
+  const result = await db!.update(restaurants)
     .set({ ...data, updatedAt: new Date() })
     .where(eq(restaurants.id, id))
     .returning()
@@ -49,29 +61,34 @@ export async function updateRestaurant(id: string, data: Partial<NewRestaurant>)
 }
 
 export async function deleteRestaurant(id: string) {
-  await db.delete(restaurants).where(eq(restaurants.id, id))
+  checkDatabase()
+  await db!.delete(restaurants).where(eq(restaurants.id, id))
 }
 
 // Dish operations
 export async function getDishes(restaurantId?: string) {
+  checkDatabase()
   if (restaurantId) {
-    return await db.select().from(dishes).where(eq(dishes.restaurantId, restaurantId)).orderBy(asc(dishes.name))
+    return await db!.select().from(dishes).where(eq(dishes.restaurantId, restaurantId)).orderBy(asc(dishes.name))
   }
-  return await db.select().from(dishes).orderBy(asc(dishes.name))
+  return await db!.select().from(dishes).orderBy(asc(dishes.name))
 }
 
 export async function getDishById(id: string) {
-  const result = await db.select().from(dishes).where(eq(dishes.id, id)).limit(1)
+  checkDatabase()
+  const result = await db!.select().from(dishes).where(eq(dishes.id, id)).limit(1)
   return result[0] || null
 }
 
 export async function createDish(data: NewDish) {
-  const result = await db.insert(dishes).values(data).returning()
+  checkDatabase()
+  const result = await db!.insert(dishes).values(data).returning()
   return result[0]
 }
 
 export async function updateDish(id: string, data: Partial<NewDish>) {
-  const result = await db.update(dishes)
+  checkDatabase()
+  const result = await db!.update(dishes)
     .set({ ...data, updatedAt: new Date() })
     .where(eq(dishes.id, id))
     .returning()
@@ -79,29 +96,34 @@ export async function updateDish(id: string, data: Partial<NewDish>) {
 }
 
 export async function deleteDish(id: string) {
-  await db.delete(dishes).where(eq(dishes.id, id))
+  checkDatabase()
+  await db!.delete(dishes).where(eq(dishes.id, id))
 }
 
 // Menu Section operations
 export async function getMenuSections(restaurantId?: string) {
+  checkDatabase()
   if (restaurantId) {
-    return await db.select().from(menuSections).where(eq(menuSections.restaurantId, restaurantId)).orderBy(asc(menuSections.order))
+    return await db!.select().from(menuSections).where(eq(menuSections.restaurantId, restaurantId)).orderBy(asc(menuSections.order))
   }
-  return await db.select().from(menuSections).orderBy(asc(menuSections.order))
+  return await db!.select().from(menuSections).orderBy(asc(menuSections.order))
 }
 
 export async function getMenuSectionById(id: string) {
-  const result = await db.select().from(menuSections).where(eq(menuSections.id, id)).limit(1)
+  checkDatabase()
+  const result = await db!.select().from(menuSections).where(eq(menuSections.id, id)).limit(1)
   return result[0] || null
 }
 
 export async function createMenuSection(data: NewMenuSection) {
-  const result = await db.insert(menuSections).values(data).returning()
+  checkDatabase()
+  const result = await db!.insert(menuSections).values(data).returning()
   return result[0]
 }
 
 export async function updateMenuSection(id: string, data: Partial<NewMenuSection>) {
-  const result = await db.update(menuSections)
+  checkDatabase()
+  const result = await db!.update(menuSections)
     .set({ ...data, updatedAt: new Date() })
     .where(eq(menuSections.id, id))
     .returning()
@@ -109,34 +131,40 @@ export async function updateMenuSection(id: string, data: Partial<NewMenuSection
 }
 
 export async function deleteMenuSection(id: string) {
-  await db.delete(menuSections).where(eq(menuSections.id, id))
+  checkDatabase()
+  await db!.delete(menuSections).where(eq(menuSections.id, id))
 }
 
 // Menu operations
 export async function getMenus(restaurantId?: string) {
+  checkDatabase()
   if (restaurantId) {
-    return await db.select().from(menus).where(eq(menus.restaurantId, restaurantId)).orderBy(desc(menus.createdAt))
+    return await db!.select().from(menus).where(eq(menus.restaurantId, restaurantId)).orderBy(desc(menus.createdAt))
   }
-  return await db.select().from(menus).orderBy(desc(menus.createdAt))
+  return await db!.select().from(menus).orderBy(desc(menus.createdAt))
 }
 
 export async function getMenuById(id: string) {
-  const result = await db.select().from(menus).where(eq(menus.id, id)).limit(1)
+  checkDatabase()
+  const result = await db!.select().from(menus).where(eq(menus.id, id)).limit(1)
   return result[0] || null
 }
 
 export async function getMenuBySlug(slug: string) {
-  const result = await db.select().from(menus).where(eq(menus.slug, slug)).limit(1)
+  checkDatabase()
+  const result = await db!.select().from(menus).where(eq(menus.slug, slug)).limit(1)
   return result[0] || null
 }
 
 export async function createMenu(data: NewMenu) {
-  const result = await db.insert(menus).values(data).returning()
+  checkDatabase()
+  const result = await db!.insert(menus).values(data).returning()
   return result[0]
 }
 
 export async function updateMenu(id: string, data: Partial<NewMenu>) {
-  const result = await db.update(menus)
+  checkDatabase()
+  const result = await db!.update(menus)
     .set({ ...data, updatedAt: new Date() })
     .where(eq(menus.id, id))
     .returning()
@@ -144,12 +172,14 @@ export async function updateMenu(id: string, data: Partial<NewMenu>) {
 }
 
 export async function deleteMenu(id: string) {
-  await db.delete(menus).where(eq(menus.id, id))
+  checkDatabase()
+  await db!.delete(menus).where(eq(menus.id, id))
 }
 
 // Menu Section Dish operations
 export async function addDishToMenuSection(menuSectionId: string, dishId: string, order: number) {
-  const result = await db.insert(menuSectionDishes).values({
+  checkDatabase()
+  const result = await db!.insert(menuSectionDishes).values({
     menuSectionId,
     dishId,
     order
@@ -158,7 +188,8 @@ export async function addDishToMenuSection(menuSectionId: string, dishId: string
 }
 
 export async function removeDishFromMenuSection(menuSectionId: string, dishId: string) {
-  await db.delete(menuSectionDishes)
+  checkDatabase()
+  await db!.delete(menuSectionDishes)
     .where(
       and(
         eq(menuSectionDishes.menuSectionId, menuSectionId),
@@ -168,7 +199,8 @@ export async function removeDishFromMenuSection(menuSectionId: string, dishId: s
 }
 
 export async function getDishesInMenuSection(menuSectionId: string) {
-  return await db.select()
+  checkDatabase()
+  return await db!.select()
     .from(menuSectionDishes)
     .innerJoin(dishes, eq(menuSectionDishes.dishId, dishes.id))
     .where(eq(menuSectionDishes.menuSectionId, menuSectionId))
@@ -177,7 +209,8 @@ export async function getDishesInMenuSection(menuSectionId: string) {
 
 // Menu Section in Menu operations
 export async function addMenuSectionToMenu(menuId: string, menuSectionId: string, order: number) {
-  const result = await db.insert(menuSectionsInMenus).values({
+  checkDatabase()
+  const result = await db!.insert(menuSectionsInMenus).values({
     menuId,
     menuSectionId,
     order
@@ -186,7 +219,8 @@ export async function addMenuSectionToMenu(menuId: string, menuSectionId: string
 }
 
 export async function removeMenuSectionFromMenu(menuId: string, menuSectionId: string) {
-  await db.delete(menuSectionsInMenus)
+  checkDatabase()
+  await db!.delete(menuSectionsInMenus)
     .where(
       and(
         eq(menuSectionsInMenus.menuId, menuId),
@@ -196,7 +230,8 @@ export async function removeMenuSectionFromMenu(menuId: string, menuSectionId: s
 }
 
 export async function getMenuSectionsInMenu(menuId: string) {
-  return await db.select()
+  checkDatabase()
+  return await db!.select()
     .from(menuSectionsInMenus)
     .innerJoin(menuSections, eq(menuSectionsInMenus.menuSectionId, menuSections.id))
     .where(eq(menuSectionsInMenus.menuId, menuId))

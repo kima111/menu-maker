@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { getRestaurants, createRestaurant, updateRestaurant, deleteRestaurant } from '@/lib/db/queries'
 import { getImageUrl } from '@/lib/images/imageUtils'
 import { uploadImage } from '@/lib/storage/blob'
+import { useRestaurant } from '@/context/RestaurantContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -39,7 +40,7 @@ interface RestaurantFormData {
 }
 
 export default function RestaurantsPage() {
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+  const { restaurants, refreshRestaurants, isLoading: restaurantLoading } = useRestaurant()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -51,27 +52,6 @@ export default function RestaurantsPage() {
     phone: '',
     website: '',
   })
-
-  useEffect(() => {
-    loadRestaurants()
-  }, [])
-
-  const loadRestaurants = async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
-      // For now, we'll use a placeholder owner ID
-      // In a real app, this would come from the authenticated user's context
-      const ownerId = 'default-owner'
-      const result = await getRestaurants(ownerId)
-      setRestaurants(result)
-    } catch (err) {
-      console.error('Failed to load restaurants:', err)
-      setError('Failed to load restaurants. Please try again.')
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -109,7 +89,7 @@ export default function RestaurantsPage() {
 
       setIsDialogOpen(false)
       resetForm()
-      loadRestaurants()
+      refreshRestaurants() // Refresh the restaurant context
     } catch (err) {
       console.error('Failed to save restaurant:', err)
       setError('Failed to save restaurant. Please try again.')
@@ -122,7 +102,7 @@ export default function RestaurantsPage() {
     try {
       await deleteRestaurant(restaurantId)
       toast.success('Restaurant deleted successfully!')
-      loadRestaurants()
+      refreshRestaurants() // Refresh the restaurant context
     } catch (err) {
       console.error('Failed to delete restaurant:', err)
       setError('Failed to delete restaurant. Please try again.')
@@ -157,6 +137,17 @@ export default function RestaurantsPage() {
     if (file) {
       setFormData(prev => ({ ...prev, logo: file }))
     }
+  }
+
+  if (restaurantLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading restaurants...</p>
+        </div>
+      </div>
+    )
   }
 
   if (isLoading && restaurants.length === 0) {

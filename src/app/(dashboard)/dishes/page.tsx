@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { getDishes, createDish, updateDish, deleteDish } from '@/lib/db/queries'
 import { getImageUrl } from '@/lib/images/imageUtils'
 import { uploadImage } from '@/lib/storage/blob'
+import { useRestaurant } from '@/context/RestaurantContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -46,6 +47,7 @@ interface DishFormData {
 }
 
 export default function DishesPage() {
+  const { currentRestaurant, isLoading: restaurantLoading } = useRestaurant()
   const [dishes, setDishes] = useState<Dish[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -89,17 +91,21 @@ export default function DishesPage() {
   ]
 
   useEffect(() => {
-    loadDishes()
-  }, [])
+    if (currentRestaurant) {
+      loadDishes()
+    }
+  }, [currentRestaurant])
 
   const loadDishes = async () => {
+    if (!currentRestaurant) {
+      setError('No restaurant selected')
+      return
+    }
+
     try {
       setIsLoading(true)
       setError(null)
-      // For now, we'll use a placeholder restaurant ID
-      // In a real app, this would come from the authenticated user's context
-      const restaurantId = 'default-restaurant'
-      const result = await getDishes(restaurantId)
+      const result = await getDishes(currentRestaurant.id)
       setDishes(result)
     } catch (err) {
       console.error('Failed to load dishes:', err)
@@ -111,6 +117,11 @@ export default function DishesPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!currentRestaurant) {
+      setError('No restaurant selected')
+      return
+    }
     
     try {
       setIsLoading(true)
@@ -134,7 +145,7 @@ export default function DishesPage() {
         isAvailable: formData.isAvailable,
         isFeatured: formData.isFeatured,
         image: imageUrl || null,
-        restaurantId: 'default-restaurant', // In a real app, this would come from user context
+        restaurantId: currentRestaurant.id,
       }
 
       if (editingDish) {
@@ -210,6 +221,35 @@ export default function DishesPage() {
         ? prev.dietary.filter(d => d !== option)
         : [...prev.dietary, option]
     }))
+  }
+
+  if (restaurantLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!currentRestaurant) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Dishes</h1>
+          <p className="text-sm text-gray-600 mt-1">No restaurant selected</p>
+        </div>
+        <div className="text-center py-12">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No Restaurant Selected</h3>
+          <p className="text-gray-600 mb-4">Please select a restaurant to manage dishes.</p>
+          <Link href="/restaurants">
+            <Button>Go to Restaurants</Button>
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   if (isLoading && dishes.length === 0) {

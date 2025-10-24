@@ -3,9 +3,6 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { CheckCircle, XCircle, Database, Upload, Settings } from 'lucide-react'
@@ -58,7 +55,7 @@ export default function SettingsPage() {
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
         <p className="text-sm text-gray-600 mt-1">
-          Manage your application settings and connections
+          System status and configuration
         </p>
       </div>
 
@@ -71,7 +68,7 @@ export default function SettingsPage() {
               Database Connection
             </CardTitle>
             <CardDescription>
-              Neon PostgreSQL database configuration
+              Neon PostgreSQL database status
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -116,20 +113,6 @@ export default function SettingsPage() {
                 <p className="text-red-600 text-sm">{connectionError}</p>
               </div>
             )}
-
-            <div className="space-y-2">
-              <Label htmlFor="database-url">Database URL</Label>
-              <Input
-                id="database-url"
-                type="password"
-                placeholder="postgresql://..."
-                value="••••••••••••••••"
-                disabled
-              />
-              <p className="text-xs text-gray-500">
-                Set DATABASE_URL in your environment variables
-              </p>
-            </div>
           </CardContent>
         </Card>
 
@@ -141,7 +124,7 @@ export default function SettingsPage() {
               File Storage
             </CardTitle>
             <CardDescription>
-              Vercel Blob storage for images and files
+              Vercel Blob storage status
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -159,55 +142,37 @@ export default function SettingsPage() {
                 Test Storage
               </Button>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="blob-token">Blob Token</Label>
-              <Input
-                id="blob-token"
-                type="password"
-                placeholder="vercel_blob_token_..."
-                value="••••••••••••••••"
-                disabled
-              />
-              <p className="text-xs text-gray-500">
-                Set BLOB_READ_WRITE_TOKEN in your environment variables
-              </p>
-            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Environment Variables Help */}
+      {/* System Information */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
             <Settings className="h-5 w-5 mr-2" />
-            Environment Variables
+            System Information
           </CardTitle>
           <CardDescription>
-            Required environment variables for the application
+            Application configuration and status
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div>
-              <h4 className="font-medium mb-2">Required Variables:</h4>
+              <h4 className="font-medium mb-2">Database & Storage:</h4>
               <div className="space-y-2 text-sm">
                 <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                  <code className="font-mono">DATABASE_URL</code>
-                  <Badge variant="outline">Required</Badge>
+                  <span>Database</span>
+                  <Badge variant="outline">Neon PostgreSQL</Badge>
                 </div>
                 <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                  <code className="font-mono">BLOB_READ_WRITE_TOKEN</code>
-                  <Badge variant="outline">Required</Badge>
+                  <span>File Storage</span>
+                  <Badge variant="outline">Vercel Blob</Badge>
                 </div>
                 <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                  <code className="font-mono">NEXTAUTH_SECRET</code>
-                  <Badge variant="outline">Required</Badge>
-                </div>
-                <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                  <code className="font-mono">NEXTAUTH_URL</code>
-                  <Badge variant="outline">Required</Badge>
+                  <span>Data Scope</span>
+                  <Badge variant="outline">Per Restaurant</Badge>
                 </div>
               </div>
             </div>
@@ -215,20 +180,21 @@ export default function SettingsPage() {
             <Separator />
 
             <div>
-              <h4 className="font-medium mb-2">Setup Instructions:</h4>
-              <ol className="list-decimal list-inside space-y-2 text-sm text-gray-600">
-                <li>Create a Neon PostgreSQL database and copy the connection string</li>
-                <li>Set up Vercel Blob storage and get the read/write token</li>
-                <li>Add all required variables to your <code className="bg-gray-100 px-1 rounded">.env.local</code> file</li>
-                <li>Run <code className="bg-gray-100 px-1 rounded">npm run db:push</code> to set up the database schema</li>
-                <li>Restart your development server</li>
-              </ol>
+              <h4 className="font-medium mb-2">Features:</h4>
+              <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
+                <li>Automatic database connection</li>
+                <li>Automatic file storage</li>
+                <li>Restaurant-scoped data</li>
+                <li>Real-time data synchronization</li>
+                <li>Image upload and management</li>
+              </ul>
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-medium text-blue-900 mb-2">Need Help?</h4>
+              <h4 className="font-medium text-blue-900 mb-2">System Ready</h4>
               <p className="text-blue-700 text-sm">
-                Check the <code className="bg-blue-100 px-1 rounded">DATABASE_SETUP.md</code> file for detailed setup instructions.
+                Your application is configured to automatically connect to Neon database and Vercel Blob storage. 
+                All data is scoped per restaurant for optimal organization and security.
               </p>
             </div>
           </div>

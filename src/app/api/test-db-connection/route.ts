@@ -3,6 +3,18 @@ import { db } from '@/lib/db/config'
 
 export async function GET(request: NextRequest) {
   try {
+    // Check if database is configured
+    if (!db) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'Database not configured. Please set DATABASE_URL environment variable.',
+          error: 'DATABASE_URL environment variable is not set'
+        },
+        { status: 500 }
+      )
+    }
+
     // Test database connection with a simple query
     await db.execute('SELECT 1 as test')
     

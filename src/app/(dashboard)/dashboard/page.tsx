@@ -2,8 +2,10 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { useRestaurant } from '@/context/RestaurantContext'
 
 export default function DashboardPage() {
+  const { currentRestaurant, restaurants, isLoading: restaurantLoading } = useRestaurant()
   const [dbConnected, setDbConnected] = useState(false)
 
   useEffect(() => {
@@ -56,7 +58,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-medium text-gray-900">Restaurants</h3>
-          <p className="text-3xl font-bold text-blue-600">0</p>
+          <p className="text-3xl font-bold text-blue-600">{restaurants.length}</p>
           <Link 
             href="/restaurants" 
             className="text-sm text-blue-600 hover:text-blue-500"
